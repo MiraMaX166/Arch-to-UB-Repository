@@ -71,7 +71,7 @@ set_dependent()
 }
 
 count=0
-file=""
+file="no"
 
 while getopts "g:p:m:lf" opt
 do
@@ -99,7 +99,7 @@ done
 
 for (( i=$count; i <= ${#pkg[*]}; i=i+1 ))
 do
-	if [ "$file" == "" ]; then  ]
+	if [ "$file" == "" ]; then  
 		echo ${pkg[$i]}
 	else
 		echo ${pkg[$i]} >> $file
