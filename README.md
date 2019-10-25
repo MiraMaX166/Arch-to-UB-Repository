@@ -1,1 +1,1 @@
-# Arch-to-UB-Repository
+# Анализ и разбор репозитория Arch Linux
