@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 validate()
 {
 	local k
@@ -25,11 +24,9 @@ validate()
 
 }
 
-get_dependent()
+check()
 {
 	local j t
-
-	buff=(${buff[@]} $(pacman -Qi $1 | grep Зави* | cut -d':' -f2 | cut -d' ' --complement -f1) )
 
 	for j in ${buff[@]}
 	do
@@ -38,17 +35,73 @@ get_dependent()
 			pkg=(${pkg[@]} $j)
 		fi
 	done
+
+	buff=()
 }
 
-pkg=($1)
-buff=()
+get_dependent()
+{
+
+	buff=(${buff[@]} $(pacman -Qi $1 | grep Зави* | cut -d':' -f2 | cut -d' ' --complement -f1) )
+	check
+
+}
+
+get_set_group()
+{
+	local j t
+
+	buff=(${pkg[@]} $(pacman -Sg $1 | cut -d' ' -f2) )
+	check
+
+	if [ $count -ne 0 ]; then
+		file="$1_filter.txt"
+	fi
+}
+
+set_dependent()
+{
+	local j
+
+	for j in $@
+	do
+		buff=(${buff[@]} $(cat $j) )
+		check
+	done
+}
+
+count=0
+file=""
+
+while getopts "g:p:m:lf" opt
+do
+	case $opt in
+		g) get_set_group $OPTARG;;
+		p) buff=(${buff[@]} $OPTARG)
+		   check;;
+		m) set_dependent $OPTARG
+		   count=${#pkg[*]};;
+		l) file="$1_full.txt";;
+		f) set_dependent "*_filter.txt"
+		   count=${#pkg[*]};;
+	esac
+done
+
 i=0
 
 while [ $i -lt ${#pkg[*]} ]
 do
-	echo ${pkg[$i]}
 	get_dependent ${pkg[$i]}
-	buff=()
 	(( i++ ))
 
+done
+
+
+for (( i=$count; i <= ${#pkg[*]}; i=i+1 ))
+do
+	if [ "$file" == "" ]; then  ]
+		echo ${pkg[$i]}
+	else
+		echo ${pkg[$i]} >> $file
+	fi
 done
