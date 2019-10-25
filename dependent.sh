@@ -81,7 +81,7 @@ do
 		   check;;
 		m) set_dependent $OPTARG
 		   count=${#pkg[*]};;
-		l) file="$1_full.txt";;
+		l) file="${pkg[0]}_full.txt";;
 		f) set_dependent "*_filter.txt"
 		   count=${#pkg[*]};;
 	esac
